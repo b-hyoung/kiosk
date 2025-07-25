@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login / Sign Up Toggle</title>
+  <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { display:flex; justify-content:center; align-items:center; height:100vh; margin:0; background:#e0e0e0; }
+    .card { background:#f5f5f5; border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,0.1); width:360px; padding:20px; }
+    .toggle-buttons { display:flex; justify-content:space-around; margin-bottom:20px; }
+    .toggle-buttons button { background:none; border:none; font-size:1rem; padding:10px; cursor:pointer; color:#333; border-bottom:2px solid transparent; }
+    .toggle-buttons button.active { border-color:#333; font-weight:bold; }
+    form { display:none; transition:opacity .3s ease-in-out; }
+    form.active { display:block; }
+    .form-group { margin-bottom:15px; position:relative; }
+    label { display:block; font-size:.9rem; margin-bottom:5px; color:#555; }
+    input, select { width:100%; padding:8px 12px; border:1px solid #aaa; border-radius:20px; font-size:.95rem; }
+    .eye-toggle { position:absolute; right:12px; top:37px; cursor:pointer; font-size:.9rem; color:#888; }
+    .error { color:red; font-size:.85rem; margin-top:5px; }
+    .submit { width:100%; padding:10px; border:none; border-radius:20px; background:#333; color:#fff; font-size:1rem; cursor:pointer; transition:background .3s; }
+    .submit:hover { background:#555; }
+    .server-error { background:#fee; color:#900; padding:10px; border-radius:8px; margin-bottom:15px; display:none; }
+    .server-error.active { display:block; }
+    
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="toggle-buttons">
+      <button id="loginBtn" class="active">Log In</button>
+      <button id="signupBtn">Sign Up</button>
+    </div>
+
+    <div id="loginError" class="server-error">Invalid email or password. Try again.</div>
+
+    <form id="loginForm" class="active">
+      <div class="form-group">
+        <label for="loginEmail">Email or ID</label>
+        <input type="text" id="loginEmail">
+        <div class="error" id="loginEmailErr"></div>
+      </div>
+      <div class="form-group">
+        <label for="loginPwd">Password</label>
+        <input type="password" id="loginPwd">
+        <span class="eye-toggle" onclick="togglePwd('loginPwd')"> </span>
+        <div class="error" id="loginPwdErr"></div>
+      </div>
+      <button type="button" class="submit" onclick="submitLogin()">Log In</button>
+    </form>
+
+    <form id="signupForm">
+      <div class="form-group">
+        <label for="signEmail">Email</label>
+        <input type="email" id="signEmail">
+        <div class="error" id="signEmailErr"></div>
+      </div>
+      <div class="form-group">
+        <label for="signPwd">Password</label>
+        <input type="password" id="signPwd">
+        <span class="eye-toggle" onclick="togglePwd('signPwd')"> </span>
+        <div class="error" id="signPwdErr"></div>
+      </div>
+      <div class="form-group">
+        <label for="signPwd2">Confirm Password</label>
+        <input type="password" id="signPwd2">
+        <span class="eye-toggle" onclick="togglePwd('signPwd2')"> </span>
+        <div class="error" id="signPwd2Err"></div>
+      </div>
+      <button type="button" class="submit" onclick="submitSignup()">Sign Up</button>
+    </form>
+  </div>
+
+  <script>
+   
+    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const loginError = document.getElementById('loginError');
+
+    loginBtn.addEventListener('click', () => {
+      loginBtn.classList.add('active'); signupBtn.classList.remove('active');
+      loginForm.classList.add('active'); signupForm.classList.remove('active');
+      loginError.classList.remove('active');
+    });
+
+    signupBtn.addEventListener('click', () => {
+      signupBtn.classList.add('active'); loginBtn.classList.remove('active');
+      signupForm.classList.add('active'); loginForm.classList.remove('active');
+      loginError.classList.remove('active');
+    });
+
+    
+    function togglePwd(id) {
+      const el = document.getElementById(id);
+      el.type = (el.type === 'password') ? 'text' : 'password';
+    }
+     function submitLogin() {
+        loginError.classList.remove('active');
+      let ok = true;
+      const e = document.getElementById('loginEmail').value.trim();
+      const p = document.getElementById('loginPwd').value;
+      document.getElementById('loginEmailErr').textContent = '';
+      document.getElementById('loginPwdErr').textContent = '';
+
+      if (!e) {
+        document.getElementById('loginEmailErr').textContent = 'Required';
+        ok = false;
+      }
+      if (!p) {
+        document.getElementById('loginPwdErr').textContent = 'Required';
+        ok = false;
+      }
+    if(!ok) return;
+
+
+   if (e.value !== 'user@example.com' && p.value !== 'password123') {
+  alert('Login successful!');
+} else {
+  loginError.classList.add('active');
+}
+
+    }
+
+     function submitSignup() {
+      let ok = true;
+      const e = document.getElementById('signEmail');
+      const p = document.getElementById('signPwd');
+      const p2 = document.getElementById('signPwd2');
+      ['signEmailErr','signPwdErr','signPwd2Err'].forEach(id => document.getElementById(id).textContent = '');
+
+      if (!e.value.trim()) { document.getElementById('signEmailErr').textContent = 'Required'; ok = false; }
+      if (p.value.length < 6) { document.getElementById('signPwdErr').textContent = 'Min 6 chars'; ok = false; }
+      if (p2.value !== p.value) { document.getElementById('signPwd2Err').textContent = 'Passwords must match'; ok = false; }
+
+      if (ok) alert('Sign up successful!');
+    }
+  </script>
+
+</body>
+</html>
+
+
